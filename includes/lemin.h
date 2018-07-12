@@ -24,6 +24,8 @@ typedef struct			s_input
 typedef struct			s_rooms
 {
 	char				*name;
+	char				*type;
+	char				*following;
 	int					x;
 	int 				y;
 	struct s_rooms		*next;
@@ -31,8 +33,10 @@ typedef struct			s_rooms
 
 typedef struct			s_links
 {
-	int					current;
-	int					following;
+	//char				*previous;
+	char				*current;
+	char				*following;
+	struct s_links		*next;
 }						t_links;
 
 typedef struct	s_lem
