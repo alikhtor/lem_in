@@ -6,10 +6,11 @@
 /*   By: alikhtor <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/04 15:16:46 by alikhtor          #+#    #+#             */
-/*   Updated: 2018/07/10 17:14:14 by alikhtor         ###   ########.fr       */
+/*   Updated: 2018/07/13 10:25:40 by alikhtor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <fcntl.h>
 #include "../includes/lemin.h"
 
 void		ft_error_2(int error_index, int *error)
@@ -27,6 +28,11 @@ void		ft_error_2(int error_index, int *error)
 	else if (error_index == 44)
 	{
 		ft_putendl_fd("Error! Wrong room or link!", 2);
+		*error = 1;
+	}
+	else if (error_index == 55)
+	{
+		ft_putendl_fd("Room coordinates are not integers!", 2);
 		*error = 1;
 	}
 }
@@ -70,86 +76,94 @@ int			ft_check_ants(t_lem *g)
 	if (temp_ants <= 0)
 		return (1);
 	g->ants = temp_ants;
-	// ft_printf("ants num: %d\n", g->ants);
+	g->input = g->input->next;
 	return (0);
 }
 
 void		ft_add_room_type(t_lem *g, char *room_type)
 {
 	if (ft_strequ(room_type, "start"))
-		g->room->type = "start";
+		g->room->type = ft_strdup("start");
 	else if (ft_strequ(room_type, "end"))
-		g->room->type = "end";
+		g->room->type = ft_strdup("end");
 	else
-		g->room->type = "room";
+		g->room->type = ft_strdup("room");
 }
 
-void		ft_link(t_lem *g)
+int 		ft_link(t_lem *g)
 {
-	return ;
+
+	return (0);
 }
 
-void		ft_room(t_lem *g)
+int         ft_room(t_lem *g)
 {
-	int i;
+	int     i;
+	int     line_len;
 
-	i = 0;
-	int space = 0;
-	while (i < ft_strlen(g->input->data))
+	i = -1;
+	line_len = (int)ft_strlen(g->input->data);
+	while (++i < line_len)
 	{
 		if (g->input->data[i] == ' ')
-			space++;
-		if (space == 1)
 		{
-			g->room->name = ft_memcpy(g->room->name, g->input, i);
-			//i++;
+			g->room->name = ft_strnew((size_t)i);
+			g->room->name = ft_memcpy(g->room->name, g->input->data, (size_t) i);
+			if (!(ft_isdigit(g->input->data[i + 1])))
+				return (ft_error(55));
 			g->room->x = ft_atoi(g->input->data + i + 1);
+			i++;
+			while (ft_isdigit(g->input->data[i]))
+				i++;
+			if (!(ft_isdigit(g->input->data[i + 1])))
+				return (ft_error(55));
+			g->room->y = ft_atoi(g->input->data + i);
+			break;
 		}
-		else if (space == 2)
-			g->room->y = ft_atoi(g->input->data + i + 1);
-		i++;
 	}
 	ft_add_room_type(g, "");
 	g->room->next = (t_rooms*)malloc(sizeof(t_rooms));
-	g->room = g->room->next;
-	return ;
+	return (2);
 }
 
 int 		ft_room_or_link(t_lem *g)
 {
-	int 	i;
-	int 	space;
+	int     i;
+	int     line_len;
+	int     space;
 
-	i = 0;
+	i = -1;
 	space = 0;
-	while (i < ft_strlen(g->input->data) && ft_isprint(g->input->data[i]))
+	line_len = (int)ft_strlen(g->input->data);
+	while (++i < line_len)
 	{
+		if (!(ft_isprint(g->input->data[i])))
+			return (1);
 		if (g->input->data[i] == ' ')
 			space++;
-		i++;
 	}
 	if (space == 2)
-		ft_room(g);
+		return (ft_room(g));
 	else if (space == 0)
-		ft_link(g);
+		return (ft_link(g));
 	else
 		return (1);
-	return (0);
 }
 
 int 		ft_start(t_lem *g)
 {
-   	g->input = g->input->next;
+	g->input = g->input->next;
 	g->flag_start += 1;
 	if (g->flag_start > 1)
 		return (ft_error(22));
 	if (g->input->next == NULL)
 		return (ft_error(2));
-	if (ft_room_or_link(g))
+	if (ft_room_or_link(g) == 1)
 		return (ft_error(44));
+	ft_strdel(&g->room->type);
 	ft_add_room_type(g, "start");
-	//write data into rooms struct! and switch to the next list!
-	// ft_printf("start coords are: %s\n", g->input->data);
+	g->room = g->room->next;
+	g->input = g->input->next;
 	return (0);
 }
 
@@ -159,12 +173,15 @@ int 		ft_end(t_lem *g)
 	g->flag_end += 1;
 	if (g->flag_end > 1)
 		return (ft_error(33));
+
 	if (g->input->next == NULL)
 		return (ft_error(3));
-	if (ft_room_or_link(g))
+	if (ft_room_or_link(g) == 1)
 		return (ft_error(44));
+	ft_strdel(&g->room->type);
 	ft_add_room_type(g, "end");
-	// ft_printf("end coords are: %s\n", end->data);
+	g->room = g->room->next;
+	g->input = g->input->next;
 	return (0);
 }
 
@@ -179,23 +196,25 @@ int			ft_check_input(t_lem *g)
 
 int 		ft_room_or_link_or_comment(t_lem *g)
 {
+	int     todo;
+
 	if (ft_strequ(g->input->data, "##start"))
 	{
 		if (ft_start(g))
 			return (1);
 	}
-	else if (ft_strequ(g->input->data, "##end"))
+	if (ft_strequ(g->input->data, "##end"))
 	{
 		if (ft_end(g))
 			return (1);
 	}
-	else
+	if (g->input->data[0] != '#')
 	{
-		if (g->input->data[0] != '#')
-		{
-			if (ft_room_or_link(g))
-				return (1);
-		}
+		todo = ft_room_or_link(g);
+		if (todo == 1)
+			return (1);
+		else if (todo == 2)
+			g->room = g->room->next;
 	}
 	return (0);
 }
@@ -206,7 +225,6 @@ int			ft_parse_and_check_input(t_lem *g)
 		return (ft_error(1));
 	while (g->input->next != NULL)
 	{
-		// ft_printf("lst-data: %s\n", lst->data);
 		if (ft_room_or_link_or_comment(g))
 			return (1);
 		g->input = g->input->next;
@@ -222,14 +240,16 @@ void		ft_write_input(t_lem *g)
 {
 	char 	*line;
 	t_input *start;
+	int 	fd;
 
 	start = g->input;
-	while (get_next_line(0, &line) > 0)
+	fd = open("/Users/alikhtor/Desktop/lem_in_github/test1", O_RDONLY);
+	while (get_next_line(fd, &line) > 0)
 	{
 		g->input->data = ft_strdup(line);
-		ft_strdel(&line);
-		g->input->next = (t_input*)malloc(sizeof(t_input));
+		g->input->next = (t_input *) malloc(sizeof(t_input));
 		g->input = g->input->next;
+		ft_strdel(&line);
 	}
 	g->input->next = NULL;
 	g->input = start;
@@ -253,7 +273,6 @@ void		ft_allocate_memmory(t_lem *g)
 	ft_bzero(g->input, sizeof(t_input));
 	ft_bzero(g->room, sizeof(t_rooms));
 	ft_bzero(g->link, sizeof(t_links));
-	return ;
 }
 
 void	ft_print_room_s(t_rooms *room)
@@ -264,8 +283,8 @@ void	ft_print_room_s(t_rooms *room)
 	{
 		ft_printf("room name :%s\n", r->name);
 		ft_printf("room type :%s\n", r->type);
+		r = r->next;
 	}
-
 }
 
 int			main(void)
@@ -286,7 +305,7 @@ int			main(void)
 		//add a function where to delete all data and free lists
 		return (1);
 	}
-	//ft_print_input(input_start);
+	ft_print_input(input_start);
 	ft_print_room_s(rooms_start);
 	//add a function where to delete all data and free lists
 	return (0);
