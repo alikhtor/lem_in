@@ -6,7 +6,7 @@
 #    By: alikhtor <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/05/30 15:15:49 by alikhtor          #+#    #+#              #
-#    Updated: 2018/07/04 15:25:36 by alikhtor         ###   ########.fr        #
+#    Updated: 2018/07/16 14:39:42 by alikhtor         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,13 @@ LIB_DIR := 			./libftprintf/
 
 # project source files
 
-SRC :=				main.c
+SRC :=				main.c\
+					start_and_end.c\
+					errors.c\
+					room.c\
+					link.c\
+					room_or_link.c\
+					input.c
 
 OBJ := 				$(addprefix $(OBJ_DIR), $(SRC:.c=.o))
 
@@ -34,7 +40,7 @@ LIBFT_INC := 		$(LIB_DIR)includes/
 
 # compilation flags
 
-FLAGS := 			-Wall -Wextra -Werror -O3
+#FLAGS := 			-Wall -Wextra -Werror -O3
 
 # header flags
 
