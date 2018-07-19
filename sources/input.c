@@ -66,6 +66,7 @@ void		ft_write_input(t_lem *g)
 
     start = g->input;
     fd = open("/Users/alikhtor/Desktop/lem_in_github/test", O_RDONLY);
+//    fd = 0;
     while (get_next_line(fd, &line) > 0)
     {
         g->input->data = ft_strdup(line);

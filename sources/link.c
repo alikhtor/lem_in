@@ -16,11 +16,11 @@ static int  ft_work_with_link(t_lem *g, int flag_minus, size_t l, size_t ml)
 {
     if (flag_minus != 1)
         return (ft_error(66));
-    g->link->current = ft_strnew(ml);
-    g->link->current = ft_memcpy(g->link->current, g->input->data, ml);
-    g->link->following = ft_strnew((size_t)l - ml);
-    g->link->following = ft_memcpy(g->link->following, g->input->data + (ml + 1), (size_t)l - (ml + 1));
-    if (ft_strequ(g->link->current, "") || ft_strequ(g->link->following, ""))
+    g->link->l1 = ft_strnew(ml);
+    g->link->l1 = ft_memcpy(g->link->l1, g->input->data, ml);
+    g->link->l2 = ft_strnew((size_t)l - ml);
+    g->link->l2 = ft_memcpy(g->link->l2, g->input->data + (ml + 1), (size_t)l - (ml + 1));
+    if (ft_strequ(g->link->l1, "") || ft_strequ(g->link->l2, ""))
         return (ft_error(66));
     g->link->next = (t_links*)malloc(sizeof(t_links));
     g->link = g->link->next;
@@ -37,6 +37,8 @@ int 		ft_link(t_lem *g)
     flag_minus = 0;
     len = 0;
     medium_len = 0;
+    if (ft_strequ(g->input->data, ""))
+        return (ft_error(67));
     while (g->input->data[len] != '\0')
     {
         if (!(ft_isprint(g->input->data[len])))

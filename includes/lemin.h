@@ -21,20 +21,28 @@ typedef struct			s_input
 	struct s_input		*next;
 }						t_input;
 
+typedef struct          s_kid_rooms
+{
+    char                *kid_name;
+    struct s_kid_rooms  *next;
+}                       t_kid_rooms;
+
 typedef struct			s_rooms
 {
 	char				*name;
 	char				*type;
-	char				*following;
+    char                *parent;
+    int                 seen;
 	int					x;
 	int 				y;
+    t_kid_rooms         *kid;
 	struct s_rooms		*next;
 }						t_rooms;
 
 typedef struct			s_links
 {
-	char				*current;
-	char				*following;
+	char				*l1;
+	char				*l2;
 	struct s_links		*next;
 }						t_links;
 
@@ -58,6 +66,6 @@ int         ft_room_or_link_or_comment(t_lem *g);
 int			ft_parse_and_check_input(t_lem *g);
 void		ft_write_input(t_lem *g);
 void		ft_print_input(t_input *print);
-
+int         ft_check_room_coordinates_and_names(t_rooms *room_a);
 
 #endif

@@ -12,6 +12,26 @@
 
 #include "../includes/lemin.h"
 
+int         ft_check_room_coordinates_and_names(t_rooms *room_a)
+{
+    t_rooms *room_b;
+
+    while (room_a->next != NULL)
+    {
+        room_b = room_a->next;
+        while (room_b->next != NULL)
+        {
+            if (ft_strequ(room_a->name, room_b->name))
+                return (ft_error(772));
+            if (room_a->x == room_b->x && room_a->y == room_b->y)
+                return (ft_error(771));
+            room_b = room_b->next;
+        }
+        room_a = room_a->next;
+    }
+    return (0);
+}
+
 static int  ft_room_or_link(t_lem *g)
 {
     int     i;
@@ -53,6 +73,8 @@ int         ft_room_or_link_or_comment(t_lem *g)
     }
     else if (g->input->next != NULL)
     {
+        if (g->input->data[0] == 'L')
+            return (ft_error(4));
         if (g->input->data[0] != '#')
         {
             todo = ft_room_or_link(g);
