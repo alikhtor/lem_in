@@ -1,5 +1,14 @@
 #include "../includes/lemin.h"
 
+static void     ft_error_5(int error_index, int *error)
+{
+    if (error_index == 990)
+    {
+        ft_putendl_fd("Error! The comment is corrupt!", 2);
+        *error = 1;
+    }
+}
+
 static void     ft_error_4(int error_index, int *error)
 {
     if (error_index == 771)
@@ -22,6 +31,8 @@ static void     ft_error_4(int error_index, int *error)
         ft_putendl_fd("Error! No pass from start to end!", 2);
         *error = 1;
     }
+    else
+        ft_error_5(error_index, error);
 }
 
 static void     ft_error_3(int error_index, int *error)

@@ -85,16 +85,18 @@ void    ft_k(t_lem *g, t_rooms *r_kid)
 int    ft_s(t_rooms *r, t_lem *g, int seen)
 {
     t_rooms *r_kid;
+    t_kid_rooms *tmp;
 
-    while (r->kid->next != NULL)
+    while (r->kid->next)
     {
         r_kid = g->room;
-        while (r_kid->next != NULL)
+        tmp = r->kid->next;
+        while (r_kid->next)
         {
             if (ft_strequ(r->kid->kid_name, r_kid->name))
             {
                 r_kid->seen = seen + 1;
-                if (r_kid->parent == NULL)
+                if (!r_kid->parent)
                     r_kid->parent = ft_strdup(r->name);
                 if (ft_strequ(r_kid->type, "end"))
                     return (1);
@@ -102,7 +104,9 @@ int    ft_s(t_rooms *r, t_lem *g, int seen)
             }
             r_kid = r_kid->next;
         }
-        r->kid = r->kid->next;
+        ft_strdel(&(r->kid->kid_name));
+        ft_memdel((void **)&r->kid);
+        r->kid = tmp;
     }
     return (0);
 }
@@ -162,65 +166,71 @@ void    ft_start_kids(t_rooms *r_start, t_links *l_start)
 void            ft_delete_rooms(t_lem *g)
 {
     t_rooms     *r;
+    t_rooms     *temp_r;
     t_kid_rooms *k;
+    t_kid_rooms *temp_k;
 
-    r = g->room;
-    while (r->next != NULL)
+    while (g->room)
     {
-//        if (r->type != NULL)
-            ft_strdel(&r->type);
+        temp_r = g->room->next;
+//          if (r->type != NULL)
+            ft_strdel(&g->room->type);
 //        if (r->parent != NULL)
-            ft_strdel(&r->parent);
+            ft_strdel(&g->room->parent);
 //        if (r->name != NULL)
-            ft_strdel(&r->name);
-        k = r->kid;
-        while (k->next != NULL)
+            ft_strdel(&g->room->name);
+        while (g->room->kid)
         {
-//            if (k->kid_name != NULL)
-                ft_strdel(&k->kid_name);
-            free(k);
-            k = k->next;
+            temp_k = g->room->kid->next;
+//  if (k->kid_name != NULL)
+            ft_strdel(&g->room->kid->kid_name);
+            ft_memdel((void **)&g->room->kid);
+            g->room->kid = temp_k;
         }
-        free(k);
-        k = NULL;
-//        ft_bzero(r, sizeof(t_rooms));
-        free(r);
+        ft_memdel((void **)&g->room);
+        g->room = temp_r;
+//        free(k);
+//        temp_r->kid = NULL;
+//        ft_bzero(temp_r, sizeof(t_rooms));
+//        free(temp_r);
 //        r = NULL;
-        r = r->next;
+
     }
 }
 
 void            ft_delete_all_structs(t_lem *g)
 {
-    t_input *i;
-    t_links *l;
+//    t_input *i;
+    t_input *temp_i;
+    t_links *temp_l;
 
-    i = g->input;
-    while (i->next != NULL)
+//    i = g->input;
+    while (g->input)
     {
 //        if (i->data != NULL)
-            ft_strdel(&i->data);
-        free(i);
-        i = i->next;
+        temp_i = g->input->next;
+            ft_strdel(&g->input->data);
+//        i = i->next;
+        ft_memdel((void **)&g->input);
+        g->input = temp_i;
     }
-    free(i);
-    l = g->link;
-    while (l->next != NULL)
+//    free(g->input);
+    while (g->link)
     {
+        temp_l = g->link->next;
 //        if (l->l1 != NULL)
-            ft_strdel(&l->l1);
+            ft_strdel(&g->link->l1);
 //        if (l->l2 != NULL)
-            ft_strdel(&l->l2);
-        free(l);
-        l = l->next;
+            ft_strdel(&g->link->l2);
+        ft_memdel((void **)&g->link);
+        g->link = temp_l;
     }
-    free(l);
     ft_delete_rooms(g);
 
 //    free(g->input);
 //    free(g->room);
 //    free(g->link);
-//    free(g);
+    ft_memdel((void **)&g);
 }
 
 static int      ft_general_check(t_lem *g, t_rooms *r, t_links *l, t_input *i)
@@ -230,17 +240,13 @@ static int      ft_general_check(t_lem *g, t_rooms *r, t_links *l, t_input *i)
         g->room = r;
         g->link = l;
         g->input = i;
-        ft_delete_all_structs(g);
         return (1);
     }
     g->room = r;
     g->link = l;
     g->input = i;
     if (ft_check_room_coordinates_and_names(r))
-    {
-        //add a function where to delete all data and free lists
         return (1);
-    }
     ft_start_kids(r,l);
     if (ft_parents_and_kids(g))
         return (ft_error(880));
@@ -260,15 +266,20 @@ int			    main(void)
 	links_start = general->link;
 	input_start = general->input;
 	ft_write_input(general);
-    if (ft_general_check(general, rooms_start, links_start, input_start))
+    if (ft_general_check(general, rooms_start, links_start, input_start)) {
+        ft_printf("---NE OK---\n");
+        system ("leaks -quiet lem-in");
         return (1);
+    }
     ft_print_input(input_start);
     ft_print_room_s(rooms_start);
     ft_print_link_s(links_start);
 
-    ft_delete_all_structs(general);
+
+//    ft_delete_all_structs(general);
 
 	//add a function where to delete all data and free lists
-    system ("leaks lem-in");
+    ft_printf("---OK---\n");
+    system ("leaks -quiet lem-in");
 	return (0);
 }

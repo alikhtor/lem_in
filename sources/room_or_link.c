@@ -53,7 +53,7 @@ static int  ft_room_or_link(t_lem *g)
     else if (space == 0)
         return (ft_link(g));
     else
-        return (1);
+        return (ft_error(990));
 }
 
 

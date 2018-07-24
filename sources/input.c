@@ -69,8 +69,11 @@ void		ft_write_input(t_lem *g)
 //    fd = 0;
     while (get_next_line(fd, &line) > 0)
     {
+//        ft_printf("|%s|\n", line);
         g->input->data = ft_strdup(line);
         g->input->next = (t_input *) malloc(sizeof(t_input));
+//        ft_bzero(&g->input->next, sizeof(t_input));
+        g->input->next->data = NULL;
         g->input = g->input->next;
         ft_strdel(&line);
     }
