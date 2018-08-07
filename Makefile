@@ -6,7 +6,7 @@
 #    By: alikhtor <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/05/30 15:15:49 by alikhtor          #+#    #+#              #
-#    Updated: 2018/07/16 14:39:42 by alikhtor         ###   ########.fr        #
+#    Updated: 2018/08/04 17:51:54 by alikhtor         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,11 @@ SRC :=				main.c\
 					room.c\
 					link.c\
 					room_or_link.c\
-					input.c
+					input.c\
+					algorithm.c\
+					start_room.c\
+					find_the_pass.c\
+					move_ant.c
 
 OBJ := 				$(addprefix $(OBJ_DIR), $(SRC:.c=.o))
 
@@ -40,7 +44,7 @@ LIBFT_INC := 		$(LIB_DIR)includes/
 
 # compilation flags
 
-#FLAGS := 			-Wall -Wextra -Werror -O3
+FLAGS := 			-Wall -Wextra -Werror -O3
 
 # header flags
 
