@@ -1,12 +1,8 @@
 # lem_in
 
-There is an ant farm, with tunnels and rooms; we place the ants on one side; and we look at how they find the exit.
+There is an ant farm, with tunnels and rooms; we place the ants on one side; and we look at how they find the exit. Program lem-in helps ants to find the exit. The goal of this program is to find the quickest way to get n ants across the farm.
 
-Program lem-in helps ants to find the exit.
-
-The goal of this program is to find the quickest way to get n ants across the farm.
-
-## File for lem-in must consists of:
+### File for lem-in must consists of:
 
 number of ants;
 
@@ -14,12 +10,14 @@ the rooms (which are defined by: name coord_x coord_y);
 
 the links (which are defined by: name1-name2);
 
+### The logic:
+
 At the beginning of the game, all the ants are in the room ##start.
 The goal is to bring them to the room ##end with as few turns as possible.
 Each room can only contain one ant at a time. (except at ##start and ##end which can contain as many ants as necessary.)
 Also error managment is present, if smth goes wrong, or there is no enough data to perform.
 
-## Example file:
+### Example file:
 
 #num_of_ants
 
