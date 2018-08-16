@@ -6,7 +6,7 @@
 /*   By: alikhtor <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/04 15:10:58 by alikhtor          #+#    #+#             */
-/*   Updated: 2018/08/04 17:19:43 by alikhtor         ###   ########.fr       */
+/*   Updated: 2018/08/08 17:00:47 by alikhtor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,6 @@ void					ft_start_kids(t_lem *g, t_rooms *r_start,
 void					ft_move_ants(char **the_way, t_lem *g);
 char					**ft_find_the_way(t_rooms *r_start);
 void					ft_free_way_str(char **the_way);
+void					ft_find_identical_links(t_lem *g);
 
 #endif

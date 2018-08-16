@@ -27,6 +27,19 @@ static void			ft_allocate_memory(t_lem *g)
 	ft_bzero(g->link, sizeof(t_links));
 }
 
+void				ft_free_way_str(char **the_way)
+{
+	int				i;
+
+	i = 0;
+	while (the_way[i] != NULL)
+	{
+		free(the_way[i]);
+		i++;
+	}
+	free(the_way);
+}
+
 void				ft_print_input(t_lem *g, t_input *print, int index)
 {
 	if (index == 0)
@@ -50,29 +63,6 @@ void				ft_print_input(t_lem *g, t_input *print, int index)
 	}
 	if (g->input->next == NULL)
 		exit(ft_error(index));
-}
-
-static void			ft_find_identical_links(t_lem *g)
-{
-	t_links			*la;
-	t_links			*lb;
-
-	la = g->link;
-	while (g->link)
-	{
-		lb = g->link->next;
-		while (lb)
-		{
-			if ((ft_strequ(g->link->l1, lb->l1) &&
-						ft_strequ(g->link->l2, lb->l2)) ||
-					(ft_strequ(g->link->l2, lb->l1) &&
-					ft_strequ(g->link->l1, lb->l2)))
-				g->link->used = 1;
-			lb = lb->next;
-		}
-		g->link = g->link->next;
-	}
-	g->link = la;
 }
 
 static void			ft_general_check(t_lem *g, t_rooms *r,

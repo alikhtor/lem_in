@@ -6,10 +6,11 @@
 /*   By: alikhtor <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/16 17:26:47 by alikhtor          #+#    #+#             */
-/*   Updated: 2018/08/04 16:56:49 by alikhtor         ###   ########.fr       */
+/*   Updated: 2018/08/08 16:57:41 by alikhtor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <fcntl.h>
 #include "../includes/lemin.h"
 
 static void		ft_check_ants(t_lem *g, t_input *i)

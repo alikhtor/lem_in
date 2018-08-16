@@ -12,17 +12,31 @@
 
 #include "../includes/lemin.h"
 
-void			ft_free_way_str(char **the_way)
+static void		ft_path_length_2(t_rooms *r, t_rooms *r_start,
+	char **name, int *size)
 {
-	int			i;
+	int			end_flag;
 
-	i = 0;
-	while (the_way[i] != NULL)
+	end_flag = 0;
+	while (r)
 	{
-		free(the_way[i]);
-		i++;
+		if (!end_flag && ft_strequ(r->type, "end"))
+		{
+			end_flag = 1;
+			*name = r->parent;
+			r = r_start;
+		}
+		else if (ft_strequ(r->name, *name))
+		{
+			*size = *size + 1;
+			if (ft_strequ(r->type, "start"))
+				break ;
+			*name = r->parent;
+			r = r_start;
+		}
+		else
+			r = r->next;
 	}
-	free(the_way);
 }
 
 static int		ft_path_length(t_rooms *r_start)
@@ -33,46 +47,30 @@ static int		ft_path_length(t_rooms *r_start)
 
 	size = 1;
 	r = r_start;
-	while (r)
-	{
-		if (ft_strequ(r->type, "end"))
-		{
-			name = r->parent;
-			r = r_start;
-		}
-		else if (ft_strequ(r->name, name))
-		{
-			size++;
-			if (ft_strequ(r->type, "start"))
-				break ;
-			name = r->parent;
-			r = r_start;
-		}
-		else
-			r = r->next;
-	}
+	name = NULL;
+	ft_path_length_2(r, r_start, &name, &size);
 	return (size);
 }
 
-static void		ft_conditions(t_rooms *r_start, int i,\
-		char *name, char **the_way)
+static void		ft_conditions_2(t_rooms *r, t_rooms *r_start,
+	char **the_way, char *name)
 {
-	t_rooms		*r;
+	int			i;
 
-	r = r_start;
+	i = 0;
 	while (r)
 	{
-		if (ft_strequ(r->type, "end"))
+		if (i == 0 && ft_strequ(r->type, "end"))
 		{
 			the_way[i] = ft_strdup(r->name);
-			i = i + 1;
+			i++;
 			name = r->parent;
 			r = r_start;
 		}
 		else if (ft_strequ(r->name, name))
 		{
 			the_way[i] = ft_strdup(r->name);
-			i = i + 1;
+			i++;
 			if (ft_strequ(r->type, "start"))
 				break ;
 			name = r->parent;
@@ -84,16 +82,23 @@ static void		ft_conditions(t_rooms *r_start, int i,\
 	the_way[i] = NULL;
 }
 
+static void		ft_conditions(t_rooms *r_start, char **the_way)
+{
+	t_rooms		*r;
+	char		*name;
+
+	name = NULL;
+	r = r_start;
+	ft_conditions_2(r, r_start, the_way, name);
+}
+
 char			**ft_find_the_way(t_rooms *r_start)
 {
 	char		**the_way;
-	int			i;
-	char		*name;
+	int			room_amount;
 
-	i = ft_path_length(r_start);
-	the_way = (char**)malloc(sizeof(char*) * (i + 1));
-	i = 0;
-	name = NULL;
-	ft_conditions(r_start, i, name, the_way);
+	room_amount = ft_path_length(r_start);
+	the_way = (char**)malloc(sizeof(char*) * (room_amount + 1));
+	ft_conditions(r_start, the_way);
 	return (the_way);
 }

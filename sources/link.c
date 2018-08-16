@@ -12,6 +12,29 @@
 
 #include "../includes/lemin.h"
 
+void			ft_find_identical_links(t_lem *g)
+{
+	t_links		*la;
+	t_links		*lb;
+
+	la = g->link;
+	while (g->link)
+	{
+		lb = g->link->next;
+		while (lb)
+		{
+			if ((ft_strequ(g->link->l1, lb->l1) &&
+				ft_strequ(g->link->l2, lb->l2)) ||
+				(ft_strequ(g->link->l2, lb->l1) &&
+					ft_strequ(g->link->l1, lb->l2)))
+				g->link->used = 1;
+			lb = lb->next;
+		}
+		g->link = g->link->next;
+	}
+	g->link = la;
+}
+
 static int		ft_check_link_2(char **tmp_l1, char **tmp_l2)
 {
 	if (ft_strequ(*tmp_l1, "") || ft_strequ(*tmp_l2, ""))
